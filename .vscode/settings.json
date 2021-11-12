@@ -2,6 +2,8 @@
     "files.associations": {
         "iostream": "cpp",
         "__threading_support": "cpp",
-        "thread": "cpp"
+        "thread": "cpp",
+        "string": "c",
+        "iosfwd": "cpp"
     }
 }

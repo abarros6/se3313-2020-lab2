@@ -1,8 +1,5 @@
 all : Writer Reader
 
-myshared.o : myshared.cpp myshared.h
-	g++ -c myshared.cpp -std=c++11
-
 Writer: Writer.o thread.o Blockable.o
 	g++ -o Writer Writer.o thread.o Blockable.o -pthread 
 
