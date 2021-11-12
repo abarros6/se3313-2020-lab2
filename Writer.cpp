@@ -2,9 +2,15 @@
 #include "SharedObject.h"
 #include "thread.h"
 #include <string>
+#include "Semaphore.h"
 
 using namespace std;
 
+//all shared variables use the 's' prefix to indicate it is the shared variable
+//delay is the amount of time that has elapsed since the last report
+//threadID is the unique identifier of the thread in question
+//reportID is the total number of times the thread has reported
+//running is a boolean value used to indicate wether the thread should be active
 struct MyShared
 {
 	int sdelay;
@@ -35,13 +41,22 @@ public:
 
 		//declare shared memory var so this thread can access it
 		Shared<MyShared> sharedMemory("sharedMemory");
+
+		Semaphore wSemaphore("writerSemaphore");
+		Semaphore rSemaphore("readerSemaphore");
+
 		while (true)
 		{
+			wSemaphore.Wait();
+
 			//write to shared memory using the local thread data values
 			sharedMemory->sthreadID = threadID; //write the threadID to memory
 			sharedMemory->sreportID = reportID; //update the number of reports
 			reportID++;							//increment the reportID so the next write operation displays the correct value
 			sharedMemory->sdelay = delay;		//set the amount of time the thread will wait
+
+			wSemaphore.Signal();
+			rSemaphore.Signal();
 
 			sleep(delay); //wait the amount of time the user specified to update the sharedMemory
 
@@ -56,6 +71,9 @@ public:
 
 int main(void)
 {
+	Semaphore wSemaphore("writerSemaphore", 1, true);
+	Semaphore rSemaphore("readerSemaphore", 0, true);
+
 	string response; //this will hold the users response to the main loop
 	int N;			 //this will hold the user input for the thread delay
 

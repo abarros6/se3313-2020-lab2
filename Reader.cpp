@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "SharedObject.h"
+#include "Semaphore.h"
 
 using namespace std;
 
@@ -28,6 +29,8 @@ int main(void)
 	//the only thing that doesnt get displayed is the status of wether or not the process is running
 	Shared<MyShared> sharedMemory("sharedMemory");
 
+	Semaphore rSemaphore("readerSemaphore");
+
 	while (true)
 	{
 		//Reader is checking the sharedMemory to make sure if it is being used
@@ -35,8 +38,10 @@ int main(void)
 		//otherwise break the execution
 		if (sharedMemory->srunning == true)
 		{
+			rSemaphore.Wait();
+
 			cout << "threadID: " << sharedMemory->sthreadID << " reportID: " << sharedMemory->sreportID << " delay: " << sharedMemory->sdelay << endl;
-			sleep(2);
+			// sleep(1); this is no longer needed beacause of the semaphores
 		}
 		else
 		{
