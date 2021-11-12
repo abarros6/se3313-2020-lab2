@@ -1,10 +1,13 @@
 all : Writer Reader
 
+myshared.o : myshared.cpp myshared.h
+	g++ -c myshared.cpp -std=c++11
+
 Writer: Writer.o thread.o Blockable.o
-	g++ -o Writer Writer.o thread.o Blockable.o -pthread -l rt
+	g++ -o Writer Writer.o thread.o Blockable.o -pthread 
 
 Reader: Reader.o thread.o Blockable.o
-	g++ -o Reader Reader.o -pthread -l rt
+	g++ -o Reader Reader.o -pthread 
 	
 Writer.o : Writer.cpp thread.h Blockable.h SharedObject.h Semaphore.h
 	g++ -c Writer.cpp -std=c++11

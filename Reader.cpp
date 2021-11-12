@@ -1,6 +1,14 @@
 #include <iostream>
+#include "SharedObject.h"
+#include "myshared.h"
+
+using namespace std;
 
 int main(void)
 {
-	std::cout << "I am a reader" << std::endl;
+	cout << "I am a reader" << endl;
+
+	Shared<MyShared> sharedMemory("sharedMemory");
+
+	cout << "hello" << endl;
 }
